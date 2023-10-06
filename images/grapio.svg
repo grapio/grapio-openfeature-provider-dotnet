@@ -5,7 +5,7 @@
    viewBox="-70.5 -70.5 391 391"
    version="1.1"
    id="svg171"
-   sodipodi:docname="test.svg"
+   sodipodi:docname="grapio.svg"
    inkscape:version="1.2.2 (b0a84865, 2022-12-01)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,21 +24,31 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="1.9741809"
-     inkscape:cx="197.29701"
-     inkscape:cy="180.58122"
-     inkscape:window-width="1920"
-     inkscape:window-height="1027"
-     inkscape:window-x="2056"
-     inkscape:window-y="206"
-     inkscape:window-maximized="1"
+     inkscape:cx="153.73465"
+     inkscape:cy="181.08776"
+     inkscape:window-width="1390"
+     inkscape:window-height="1205"
+     inkscape:window-x="0"
+     inkscape:window-y="44"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg171" />
+  <rect
+     style="fill:#ffffff;stroke-width:0.972837"
+     id="rect430"
+     width="140"
+     height="170"
+     x="-13.767612"
+     y="-19.339542"
+     inkscape:export-filename="grapio-padded.png"
+     inkscape:export-xdpi="340"
+     inkscape:export-ydpi="340" />
   <rect
      width="103"
      height="93"
      rx="8"
      id="rect132"
      style="fill:#4d4d4d"
-     x="3.2289855"
+     x="4.7323875"
      y="0"
      inkscape:export-filename="rect132.png"
      inkscape:export-xdpi="104.20676"
@@ -46,7 +56,7 @@
   <g
      id="SvgjsG1457"
      featurekey="symbolFeature-0"
-     transform="matrix(0.08974359,0,0,0.08974359,23.318729,15.089744)"
+     transform="matrix(0.08974359,0,0,0.08974359,24.822131,15.089744)"
      fill="#ffffff">
     <g
        id="g138">
@@ -108,12 +118,12 @@
   <text
      xml:space="preserve"
      style="font-weight:600;font-size:32px;font-family:Metropolis;-inkscape-font-specification:'Metropolis, Semi-Bold';fill:#4d4d4d"
-     x="1.8071105"
+     x="3.3105125"
      y="122.14561"
      id="text389"><tspan
        sodipodi:role="line"
        id="tspan387"
-       x="1.8071105"
+       x="3.3105125"
        y="122.14561"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;font-family:Rockwell;-inkscape-font-specification:'Rockwell, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">grapio</tspan></text>
 </svg>

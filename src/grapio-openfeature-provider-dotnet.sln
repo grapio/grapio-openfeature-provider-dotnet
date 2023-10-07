@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio", "grapio\grapio.csproj", "{17EDD15F-4A82-40A8-BF79-1A9719B27EFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio-provider-tests", "grapio-provider-tests\grapio-provider-tests.csproj", "{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio-tests", "grapio-tests\grapio-tests.csproj", "{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio-provider", "grapio-provider\grapio-provider.csproj", "{2C0DACD8-421E-47F7-BA34-59BC9480804E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{17EDD15F-4A82-40A8-BF79-1A9719B27EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17EDD15F-4A82-40A8-BF79-1A9719B27EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17EDD15F-4A82-40A8-BF79-1A9719B27EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17EDD15F-4A82-40A8-BF79-1A9719B27EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,67 @@
+name: grapio-openfeature-provider-dotnet
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+  release:
+    types: 
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '7.0.x' ]
+    name: Build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Restore dependencies
+        run: dotnet restore src/grapio-openfeature-provider-dotnet.sln
+      - name: Build
+        run: dotnet build --no-restore src/grapio-openfeature-provider-dotnet.sln
+      - name: Test
+        run: dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}" --no-build --verbosity normal src/grapio-openfeature-provider-dotnet.sln
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-results-${{ matrix.dotnet-version }}
+          path: TestResults-${{ matrix.dotnet-version }}
+        if: ${{ always() }}
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '7.0.x' ]
+    name: Semantic release
+    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - build
+    steps:  
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.NUGET }}
+    - name: Set version variable
+      if: ${{ github.ref_type == 'tag' }}
+      env:
+        TAG: ${{ github.ref_name }}
+      run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+    - run: dotnet build --configuration Release src/grapio-provider/grapio-provider.csproj -p:PackageVersion=$VERSION
+    - name: Create the package
+      run: dotnet pack --configuration Release src/grapio-provider/grapio-provider.csproj -p:PackageVersion=$VERSION
+    - name: Publish the package to NuGet
+      run: dotnet nuget push src/grapio-provider/bin/Release/grapio-provider.$VERSION.nupkg --api-key ${{ secrets.NUGET }}

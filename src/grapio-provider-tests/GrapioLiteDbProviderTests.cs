@@ -1,10 +1,9 @@
-using grapio;
+using grapio_common;
+using grapio_provider;
 using LiteDB;
-using Newtonsoft.Json;
 using NSubstitute;
 using OpenFeature.Constant;
 using OpenFeature.Model;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace grapio_tests;
 

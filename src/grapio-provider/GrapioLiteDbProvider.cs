@@ -43,25 +43,25 @@ public class GrapioLiteDbProvider: FeatureProvider, IDisposable
     }
 
     /// <inheritdoc />
-    public override Task<ResolutionDetails<string>> ResolveStringValue(string flagKey, string defaultValue, EvaluationContext context = null)
+    public override Task<ResolutionDetails<string>> ResolveStringValue(string flagKey, string defaultValue, EvaluationContext context = null!)
     {
         return ResolveValue<StringFeatureFlag, string>(flagKey, defaultValue);
     }
 
     /// <inheritdoc />
-    public override Task<ResolutionDetails<int>> ResolveIntegerValue(string flagKey, int defaultValue, EvaluationContext context = null)
+    public override Task<ResolutionDetails<int>> ResolveIntegerValue(string flagKey, int defaultValue, EvaluationContext context = null!)
     {
         return ResolveValue<IntegerFeatureFlag, int>(flagKey, defaultValue);
     }
 
     /// <inheritdoc />
-    public override Task<ResolutionDetails<double>> ResolveDoubleValue(string flagKey, double defaultValue, EvaluationContext context = null)
+    public override Task<ResolutionDetails<double>> ResolveDoubleValue(string flagKey, double defaultValue, EvaluationContext context = null!)
     {
         return ResolveValue<DoubleFeatureFlag, double>(flagKey, defaultValue);
     }
 
     /// <inheritdoc />
-    public override async Task<ResolutionDetails<Value>> ResolveStructureValue(string flagKey, Value defaultValue, EvaluationContext context = null)
+    public override async Task<ResolutionDetails<Value>> ResolveStructureValue(string flagKey, Value defaultValue, EvaluationContext context = null!)
     {
         var resolution = await ResolveValue<ValueFeatureFlag, object>(flagKey, defaultValue);
 

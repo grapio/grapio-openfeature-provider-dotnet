@@ -12,10 +12,6 @@ on:
     types: 
       - created
 
-env:
-    NUGET_AUTH_TOKEN: ${{ secrets.NUGET }}
-    TAG: ${{ github.ref_name }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -57,8 +53,12 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
           source-url: https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Set version variable
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
         run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
       - run: dotnet build --configuration Release src/grapio-provider/grapio-provider.csproj -p:PackageVersion=$VERSION
       - name: Create the package

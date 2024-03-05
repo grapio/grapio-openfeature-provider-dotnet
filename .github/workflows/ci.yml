@@ -12,12 +12,17 @@ on:
     types: 
       - created
 
+env:
+  solution_file: src/Grapio.Provider.sln
+  project_file: src/Grapio.Provider/Grapio.Provider.csproj
+  nuget_package: src/Grapio.Provider/bin/Release/Grapio.Provider.$VERSION.nupkg
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '7.0.x' ]
+        dotnet-version: [ '7.0.x', '8.0.x' ]
     name: Build
     steps:
       - uses: actions/checkout@v4
@@ -26,11 +31,11 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Restore dependencies
-        run: dotnet restore src/grapio-openfeature-provider-dotnet.sln
+        run: dotnet restore ${{ env.solution_file }}
       - name: Build
-        run: dotnet build --no-restore src/grapio-openfeature-provider-dotnet.sln
+        run: dotnet build --no-restore ${{ env.solution_file }}
       - name: Test
-        run: dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}" --no-build --verbosity normal src/grapio-openfeature-provider-dotnet.sln
+        run: dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}" --no-build --verbosity normal ${{ env.solution_file }}
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v3
         with:
@@ -41,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '7.0.x' ]
+        dotnet-version: [ '8.0.x' ]
     name: Semantic release
     if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
     needs:
@@ -54,14 +59,14 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
           source-url: https://api.nuget.org/v3/index.json
         env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET}}
       - name: Set version variable
         if: ${{ github.ref_type == 'tag' }}
         env:
           TAG: ${{ github.ref_name }}
         run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
-      - run: dotnet build --configuration Release src/grapio-provider/grapio-provider.csproj -p:PackageVersion=$VERSION
+      - run: dotnet build --configuration Release ${{ env.project_file }} -p:PackageVersion=$VERSION
       - name: Create the package
-        run: dotnet pack --configuration Release src/grapio-provider/grapio-provider.csproj -p:PackageVersion=$VERSION
+        run: dotnet pack --configuration Release ${{ env.project_file }} -p:PackageVersion=$VERSION
       - name: Publish the package to NuGet
-        run: dotnet nuget push src/grapio-provider/bin/Release/grapio-provider.$VERSION.nupkg --api-key ${{ secrets.NUGET }}
+        run: dotnet nuget push ${{ env.nuget_package }} --api-key ${{ secrets.NUGET }}

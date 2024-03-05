@@ -6,12 +6,12 @@
         <RootNamespace>Grapio.Provider</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Title>Grapio OpenFeature Provider Dotnet</Title>
+        <Title>Grapio OpenFeature Provider for .NET</Title>
         <Authors>Sydney du Plooy</Authors>
-        <Description>Grapio OpenFeature provider for .NET</Description>
-        <Copyright>Copyright (c) 2024 grapio</Copyright>
+        <Description>Grapio OpenFeature Provider for .NET</Description>
+        <Copyright>Copyright (c) 2024 Sydney du Plooy</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/grapio/grapio-openfeature-provider-dotnet</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/grapio</PackageProjectUrl>
         <PackageIcon>grapio-padded.png</PackageIcon>
         <RepositoryUrl>https://github.com/grapio/grapio-openfeature-provider-dotnet</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -21,7 +21,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="grapio-padded.png" Visible="false" Pack="true" PackagePath="\"/>
+        <None Include="../../icons/grapio-padded.png" Visible="false" Pack="true" PackagePath="\"/>
+        <None Include="../../README.md" Visible="false" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

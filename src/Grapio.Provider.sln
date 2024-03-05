@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio-provider-tests", "grapio-provider-tests\grapio-provider-tests.csproj", "{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider.Tests", "Grapio.Provider.Tests\Grapio.Provider.Tests.csproj", "{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grapio-provider", "grapio-provider\grapio-provider.csproj", "{2C0DACD8-421E-47F7-BA34-59BC9480804E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider", "Grapio.Provider\Grapio.Provider.csproj", "{2C0DACD8-421E-47F7-BA34-59BC9480804E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

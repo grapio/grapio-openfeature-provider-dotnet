@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>grapio_tests</RootNamespace>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>Grapio.Tests</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\grapio-provider\grapio-provider.csproj" />
+      <ProjectReference Include="..\Grapio.Provider\Grapio.Provider.csproj" />
     </ItemGroup>
 
 </Project>

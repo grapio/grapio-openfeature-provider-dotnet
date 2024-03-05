@@ -1,13 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
-using grapio_common;
+using Grapio.Common;
 using LiteDB;
 using OpenFeature;
 using OpenFeature.Constant;
 using OpenFeature.Model;
 
-[assembly: InternalsVisibleTo("grapio-provider-tests")]
+[assembly: InternalsVisibleTo("Grapio.Provider.Tests")]
 
-namespace grapio_provider;
+namespace Grapio.Provider;
 
 /// <summary>
 /// A LiteDB based self-contained OpenFeature provider that performs flag evaluations. 

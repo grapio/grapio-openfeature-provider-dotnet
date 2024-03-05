@@ -1,11 +1,11 @@
-using grapio_common;
-using grapio_provider;
+using Grapio.Common;
+using Grapio.Provider;
 using LiteDB;
 using NSubstitute;
 using OpenFeature.Constant;
 using OpenFeature.Model;
 
-namespace grapio_tests;
+namespace Grapio.Tests;
 
 public class GrapioLiteDbProviderTests : IDisposable
 {

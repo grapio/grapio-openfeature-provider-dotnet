@@ -1,4 +1,4 @@
-name: grapio-openfeature-provider-dotnet
+name: grapio-openfeature-provider-dotnet-ci
 
 on: 
   workflow_dispatch:

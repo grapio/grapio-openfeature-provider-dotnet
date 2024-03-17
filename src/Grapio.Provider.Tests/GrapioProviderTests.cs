@@ -1,3 +1,4 @@
+using FluentValidation;
 using Grapio.Common;
 using Grapio.Provider;
 using LiteDB;
@@ -7,69 +8,52 @@ using OpenFeature.Model;
 
 namespace Grapio.Tests;
 
-public class GrapioLiteDbProviderTests : IDisposable
+public class GrapioProviderTests : IDisposable
 {
-    public class Customer
+    private class AppConfig
     {
-        public ObjectId CustomerId { get; set; }
-        public string Name { get; set; }
+        public ObjectId AppId { get; set; } = new();
+        public string Name { get; set; } = string.Empty;
         public DateTime CreationDate { get; set; }
-        public List<string> Phones { get; set; }
+        public List<string> Ports { get; set; } = [];
         public bool IsActive { get; set; }
     }
     
-    private readonly Customer _customer;
+    private readonly AppConfig _appConfig;
     private readonly ILiteDatabase _database;
-    private readonly GrapioLiteDbProvider _provider;
+    private readonly GrapioProvider _provider;
 
-    public GrapioLiteDbProviderTests()
+    public GrapioProviderTests()
     {
-        _database = new LiteDatabase("Filename=:temp:");
-        _provider = new GrapioLiteDbProvider(_database);
+        _database = new LiteDatabase("Filename=:memory:");
+        _provider = new GrapioProvider(_database);
         
-        _customer = new Customer
+        _appConfig = new AppConfig
         {
-            Name = "Joe",
-            Phones = new List<string>
-            {
-                "010555",
-                "020555"
-            },
+            AppId = ObjectId.NewObjectId(),
+            Name = "My Application",
+            Ports = [
+                "80",
+                "443"
+            ],
             CreationDate = DateTime.Today,
-            CustomerId = ObjectId.NewObjectId(),
             IsActive = true
         };
     }
     
     [Fact]
-    public void Constructing_the_provider_must_accept_a_connection_string()
+    public void Constructing_the_provider_must_validate_the_configuration()
     {
-        var exception = Record.Exception(() => 
-            new GrapioLiteDbProvider("Filename=:temp:;Password=1234;Connection=direct;InitialSize=10MB;ReadOnly=false;Upgrade=false;")
-        );
-        
-        Assert.Null(exception);
-    }
-
-    [Fact]
-    public void Constructing_the_provider_with_an_empty_connection_string_must_throw_an_exception()
-    {
-        var exception = Assert.Throws<ArgumentNullException>(() => new GrapioLiteDbProvider(""));
-        Assert.Equal("Value cannot be null. (Parameter 'connectionString')", exception.Message);
+        var configMock = Substitute.For<IGrapioConfiguration>();
+        using var provider = new GrapioProvider(configMock);
+        configMock.Received().Validate();
     }
     
     [Fact]
-    public void Constructing_the_provider_with_a_null_connection_string_must_throw_an_exception()
-    {
-        var exception = Assert.Throws<ArgumentNullException>(() => new GrapioLiteDbProvider((string)null!));
-        Assert.Equal("Value cannot be null. (Parameter 'connectionString')", exception.Message);
-    }
-
-    [Fact]
     public void Calling_get_metadata_must_return_metadata_with_the_name_of_the_provider()
     {
-        using var provider = new GrapioLiteDbProvider(_database);
-        Assert.Equal("GrapioProvider", provider.GetMetadata().Name);
+        using var provider = new GrapioProvider(_database);
+        Assert.Equal("Grapio Provider", provider.GetMetadata().Name);
     }
 
     [Fact]
@@ -94,9 +78,9 @@ public class GrapioLiteDbProviderTests : IDisposable
     public async Task Calling_resolve_boolean_value_and_an_exception_occurs_should_return_general_error_resolution_with_default_value()
     {
         var db = Substitute.For<ILiteDatabase>();
-        db.GetCollection<BooleanFeatureFlag>().Returns(x => throw new Exception("general failure"));
+        db.GetCollection<BooleanFeatureFlag>().Returns(_ => throw new Exception("general failure"));
         
-        using var provider = new GrapioLiteDbProvider(db);
+        using var provider = new GrapioProvider(db);
         var resolution = await provider.ResolveBooleanValue("flag", false);
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Exception", resolution.Reason);
@@ -137,9 +121,9 @@ public class GrapioLiteDbProviderTests : IDisposable
     public async Task Calling_resolve_string_value_and_an_exception_occurs_should_return_general_error_resolution_with_default_value()
     {
         var db = Substitute.For<ILiteDatabase>();
-        db.GetCollection<StringFeatureFlag>().Returns(x => throw new Exception("general failure"));
+        db.GetCollection<StringFeatureFlag>().Returns(_ => throw new Exception("general failure"));
         
-        using var provider = new GrapioLiteDbProvider(db);
+        using var provider = new GrapioProvider(db);
         var resolution = await provider.ResolveStringValue("flag", "default");
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Exception", resolution.Reason);
@@ -180,9 +164,9 @@ public class GrapioLiteDbProviderTests : IDisposable
     public async Task Calling_resolve_integer_value_and_an_exception_occurs_should_return_general_error_resolution_with_default_value()
     {
         var db = Substitute.For<ILiteDatabase>();
-        db.GetCollection<IntegerFeatureFlag>().Returns(x => throw new Exception("general failure"));
+        db.GetCollection<IntegerFeatureFlag>().Returns(_ => throw new Exception("general failure"));
         
-        using var provider = new GrapioLiteDbProvider(db);
+        using var provider = new GrapioProvider(db);
         var resolution = await provider.ResolveIntegerValue("flag", 222);
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Exception", resolution.Reason);
@@ -223,9 +207,9 @@ public class GrapioLiteDbProviderTests : IDisposable
     public async Task Calling_resolve_double_value_and_an_exception_occurs_should_return_general_error_resolution_with_default_value()
     {
         var db = Substitute.For<ILiteDatabase>();
-        db.GetCollection<DoubleFeatureFlag>().Returns(x => throw new Exception("general failure"));
+        db.GetCollection<DoubleFeatureFlag>().Returns(_ => throw new Exception("general failure"));
         
-        using var provider = new GrapioLiteDbProvider(db);
+        using var provider = new GrapioProvider(db);
         var resolution = await provider.ResolveDoubleValue("flag", 200.01);
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Exception", resolution.Reason);
@@ -247,32 +231,32 @@ public class GrapioLiteDbProviderTests : IDisposable
     [Fact]
     public async Task Calling_resolve_structure_value_with_a_blank_flag_key_should_return_error_resolution_with_default_value()
     {
-        var serializedCustomer = System.Text.Json.JsonSerializer.Serialize(_customer);
+        var appConfig = System.Text.Json.JsonSerializer.Serialize(_appConfig);
         
-        var resolution = await _provider.ResolveStructureValue("", new Value(serializedCustomer));
+        var resolution = await _provider.ResolveStructureValue("", new Value(appConfig));
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Flag key is blank or null", resolution.Reason);
         Assert.Equal("Invalid flag key", resolution.ErrorMessage);
-        Assert.Equal(serializedCustomer, resolution.Value.AsString);
+        Assert.Equal(appConfig, resolution.Value.AsString);
     }
     
     [Fact]
     public async Task Calling_resolve_structure_value_with_a_non_existent_flag_key_should_return_flag_not_found_resolution_with_default_value()
     {
-        var serializedCustomer = System.Text.Json.JsonSerializer.Serialize(_customer);
+        var appConfig = System.Text.Json.JsonSerializer.Serialize(_appConfig);
         
-        var resolution = await _provider.ResolveStructureValue("flag", new Value(serializedCustomer));
+        var resolution = await _provider.ResolveStructureValue("flag", new Value(appConfig));
         Assert.Equal(ErrorType.FlagNotFound, resolution.ErrorType);
-        Assert.Equal(serializedCustomer, resolution.Value.AsString);
+        Assert.Equal(appConfig, resolution.Value.AsString);
     }
     
     [Fact]
     public async Task Calling_resolve_structure_value_and_an_exception_occurs_should_return_general_error_resolution_with_default_value()
     {
         var db = Substitute.For<ILiteDatabase>();
-        db.GetCollection<ValueFeatureFlag>().Returns(x => throw new Exception("general failure"));
+        db.GetCollection<ValueFeatureFlag>().Returns(_ => throw new Exception("general failure"));
         
-        using var provider = new GrapioLiteDbProvider(db);
+        using var provider = new GrapioProvider(db);
         var resolution = await provider.ResolveStructureValue("flag", null!);
         Assert.Equal(ErrorType.General, resolution.ErrorType);
         Assert.Equal("Exception", resolution.Reason);
@@ -283,14 +267,14 @@ public class GrapioLiteDbProviderTests : IDisposable
     [Fact]
     public async Task Calling_resolve_structure_value_must_return_the_resolution_details_with_a_valid_value()
     {
-        var serializedCustomer = System.Text.Json.JsonSerializer.Serialize(_customer);
+        var appConfig = System.Text.Json.JsonSerializer.Serialize(_appConfig);
         
         var collection = _database.GetCollection<ValueFeatureFlag>();
-        collection.Insert(new ValueFeatureFlag("flag-1", serializedCustomer));
+        collection.Insert(new ValueFeatureFlag("flag-1", appConfig));
         collection.EnsureIndex(x => x.FlagKey, unique: true);
         
         var resolution = await _provider.ResolveStructureValue("flag-1", null!);
-        Assert.Equal(serializedCustomer, resolution.Value.AsString);
+        Assert.Equal(appConfig, resolution.Value.AsString);
     }
     
     public void Dispose()

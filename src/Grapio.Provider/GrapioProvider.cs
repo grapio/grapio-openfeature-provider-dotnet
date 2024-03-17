@@ -6,34 +6,39 @@ using OpenFeature.Constant;
 using OpenFeature.Model;
 
 [assembly: InternalsVisibleTo("Grapio.Provider.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace Grapio.Provider;
 
 /// <summary>
 /// A LiteDB based self-contained OpenFeature provider that performs flag evaluations. 
 /// </summary>
-public class GrapioLiteDbProvider: FeatureProvider, IDisposable
+public class GrapioProvider: FeatureProvider, IDisposable
 {
-    private readonly ILiteDatabase _database;
+    private readonly Func<ILiteDatabase> _createDatabase;
+    private ILiteDatabase? _database;
     
     /// <summary>
     /// Creates an instance of the <see href="GrapioProvider"/> class with a LiteDB connection string.   
     /// </summary>
-    /// <param name="connectionString">A LiteDB connection string. See https://www.litedb.org/docs/connection-string/</param>
-    public GrapioLiteDbProvider(string connectionString)
+    /// <param name="configuration">A <see cref="GrapioConfiguration"/> object that can be used to configure the Grapio Provider.</param>
+    public GrapioProvider(IGrapioConfiguration configuration)
     {
-        _database = new LiteDatabase(connectionString);
+        var config = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        
+        config.Validate();
+        _createDatabase = () => _database = new LiteDatabase(config.ConnectionString);
     }
 
-    internal GrapioLiteDbProvider(ILiteDatabase database)
+    internal GrapioProvider(ILiteDatabase database)
     {
-        _database = database ?? throw new ArgumentNullException(nameof(database));
+        _createDatabase = () => _database = database;
     }
 
     /// <inheritdoc />
     public override Metadata GetMetadata()
     {
-        return new Metadata("GrapioProvider");
+        return new Metadata("Grapio Provider");
     }
 
     /// <inheritdoc />
@@ -90,7 +95,7 @@ public class GrapioLiteDbProvider: FeatureProvider, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        _database.Dispose();
+        _database?.Dispose();
         GC.SuppressFinalize(this);
     }
     
@@ -104,6 +109,8 @@ public class GrapioLiteDbProvider: FeatureProvider, IDisposable
 
         try
         {
+            _database = _createDatabase();
+            
             var collection = _database.GetCollection<TFeat>();
 
             var exists = collection.Exists(f => f.FlagKey.Equals(flagKey, StringComparison.InvariantCultureIgnoreCase));

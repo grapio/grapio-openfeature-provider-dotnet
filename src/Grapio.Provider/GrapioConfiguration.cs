@@ -9,37 +9,60 @@ namespace Grapio.Provider;
 public interface IGrapioConfiguration
 {
     /// <summary>
-    /// A LiteDB connection string to the configuration file. See https://www.litedb.org/docs/connection-string/
+    /// A LiteDB connection string to the configuration file. See https://www.litedb.org/docs/connection-string/.
+    /// Defaults to Filename=:memory:.
     /// </summary>
     string ConnectionString { get; set; }
+    
+    /// <summary>
+    /// Set this value to true if the provider must load the feature flags and values during startup from the
+    /// Grapio Server. Default is false.
+    /// </summary>
+    bool LoadFeatureFlagsFromServer { get; set; }
 
     /// <summary>
-    /// The Grapio ZeroMQ proxy address of the XPublisherSocket, for example, tcp://127.0.0.1:8652
+    /// The Grapio Server address from which to fetch the feature flags and values. Default is http://localhost.
     /// </summary>
-    string ZmqProxyAddress { get; set; }
+    string ServerAddress { get; set; }
+
+    /// <summary>
+    /// Refresh interval (between 5 and 7200 inclusive seconds) when the configuration will be refreshed
+    /// from the Grapio Server. Default is 10 seconds.
+    /// </summary>
+    long RefreshInterval { get; set; }
 
     /// <summary>
     /// Validates the properties of the <see cref="GrapioConfiguration"/> class
     /// </summary>
     /// <returns><see cref="ValidationResult"/></returns>
-    void Validate();
+    void ValidateAndThrow();
 }
 
-/// <summary>
-/// Grapio Provider configuration.
-/// </summary>
+/// <inheritdoc />
 public class GrapioConfiguration : IGrapioConfiguration
 {
     /// <inheritdoc />
-    public string ConnectionString { get; set; } = string.Empty;
+    public string ConnectionString { get; set; } = "Filename=:memory:";
 
     /// <inheritdoc />
-    public string ZmqProxyAddress { get; set; } = string.Empty;
+    public bool LoadFeatureFlagsFromServer { get; set; } = false;
 
     /// <inheritdoc />
-    public void Validate()
+    public string ServerAddress { get; set; } = "http://localhost";
+
+    /// <inheritdoc />
+    public long RefreshInterval { get; set; } = 10;
+    
+    /// <inheritdoc />
+    public void ValidateAndThrow()
     {
         var validator = new GrapioConfigurationValidator();
         validator.ValidateAndThrow(this);
     }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="GrapioConfiguration"/> and sets the properties to default values.
+    /// </summary>
+    /// <returns>A default Grapio configuration.</returns>
+    public static GrapioConfiguration Default => new();
 }

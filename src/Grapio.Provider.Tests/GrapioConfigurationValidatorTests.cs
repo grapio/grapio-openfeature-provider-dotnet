@@ -28,22 +28,4 @@ public class GrapioConfigurationValidatorTests
         result.ShouldHaveValidationErrorFor(prop => prop.ConnectionString)
             .WithErrorMessage("A valid LiteDb connection string must be set.");
     }
-    
-    [Fact]
-    public void Validating_a_configuration_with_an_invalid_zeromq_proxy_address_must_throw_an_exception()
-    {
-        _configuration.ZmqProxyAddress = "invalid";
-
-        var result = new GrapioConfigurationValidator().TestValidate(_configuration);
-        
-        result.ShouldHaveValidationErrorFor(prop => prop.ZmqProxyAddress)
-            .WithErrorMessage("ZmqAddress must match the format <protocol>://<ip address>:<port>");
-    }
-    
-    [Fact]
-    public void Validating_a_configuration_with_an_unspecified_zeromq_proxy_address_must_not_throw_an_exception()
-    {
-        var result = new GrapioConfigurationValidator().TestValidate(_configuration);
-        result.ShouldNotHaveValidationErrorFor(prop => prop.ZmqProxyAddress);
-    }
 }

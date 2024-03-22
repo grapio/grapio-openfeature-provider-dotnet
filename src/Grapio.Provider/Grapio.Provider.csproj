@@ -36,10 +36,19 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.9.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.26.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.62.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="LiteDB" Version="5.0.19" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
         <PackageReference Include="OpenFeature" Version="1.5.0" />
-        <PackageReference Include="Grapio.Common" Version="2.0.1" />
         <PackageReference Include="Grapio.Common" Version="2.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Protobuf Include="Protos\FeatureFlags.proto" GrpcServices="Client" />
+    </ItemGroup>
 </Project>

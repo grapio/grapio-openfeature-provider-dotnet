@@ -14,9 +14,13 @@ internal class GrapioConfigurationValidator : AbstractValidator<GrapioConfigurat
             .NotEmpty()
             .WithMessage("A valid LiteDb connection string must be set.");
 
-        RuleFor(c => c.ZmqProxyAddress)
-            .Matches(@"^(tcp|udp)://[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}:[\d]+$")
-            .When(c => !string.IsNullOrEmpty(c.ZmqProxyAddress))
-            .WithMessage("ZmqAddress must match the format <protocol>://<ip address>:<port>");
-    }    
+        RuleFor(c => c.ServerAddress)
+            .NotEmpty()
+            .WithMessage("A valid Grapio Server address is required when LoadFeatureFlagsFromServer is set to true.")
+            .When(c => c.LoadFeatureFlagsFromServer);
+        
+        RuleFor(c => c.RefreshInterval)
+            .InclusiveBetween(5, 7200)
+            .WithMessage("Refresh interval must be between 5 and 7200 seconds (inclusive).");
+    }
 }

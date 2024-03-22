@@ -1,4 +1,3 @@
-using FluentValidation;
 using Grapio.Common;
 using Grapio.Provider;
 using LiteDB;
@@ -12,11 +11,11 @@ public class GrapioProviderTests : IDisposable
 {
     private class AppConfig
     {
-        public ObjectId AppId { get; set; } = new();
-        public string Name { get; set; } = string.Empty;
-        public DateTime CreationDate { get; set; }
-        public List<string> Ports { get; set; } = [];
-        public bool IsActive { get; set; }
+        public ObjectId AppId = new();
+        public string Name = string.Empty;
+        public DateTime CreationDate; 
+        public List<string> Ports = [];
+        public bool IsActive;
     }
     
     private readonly AppConfig _appConfig;
@@ -39,14 +38,6 @@ public class GrapioProviderTests : IDisposable
             CreationDate = DateTime.Today,
             IsActive = true
         };
-    }
-    
-    [Fact]
-    public void Constructing_the_provider_must_validate_the_configuration()
-    {
-        var configMock = Substitute.For<IGrapioConfiguration>();
-        using var provider = new GrapioProvider(configMock);
-        configMock.Received().Validate();
     }
     
     [Fact]

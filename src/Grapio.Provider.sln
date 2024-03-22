@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider.Tests", "Gr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider", "Grapio.Provider\Grapio.Provider.csproj", "{2C0DACD8-421E-47F7-BA34-59BC9480804E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Console", "Grapio.Console\Grapio.Console.csproj", "{D9418870-A978-4A7A-A22D-1D8195FB0434}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

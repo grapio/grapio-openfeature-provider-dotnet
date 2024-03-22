@@ -1,9 +1,15 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Grapio.Common;
+using Grpc.Core;
+using Grpc.Net.Client;
 using LiteDB;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using OpenFeature;
 using OpenFeature.Constant;
 using OpenFeature.Model;
+using Metadata = OpenFeature.Model.Metadata;
 
 [assembly: InternalsVisibleTo("Grapio.Provider.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
@@ -15,26 +21,106 @@ namespace Grapio.Provider;
 /// </summary>
 public class GrapioProvider: FeatureProvider, IDisposable
 {
-    private readonly Func<ILiteDatabase> _createDatabase;
-    private ILiteDatabase? _database;
-    
+    private readonly ILogger<GrapioProvider> _logger;
+    private readonly IGrapioConfiguration _config;
+    private ILiteDatabase _database = null!;
+    private ProviderStatus _status;
+
     /// <summary>
-    /// Creates an instance of the <see href="GrapioProvider"/> class with a LiteDB connection string.   
+    /// Creates an instance of the <see href="GrapioProvider"/> class.   
     /// </summary>
     /// <param name="configuration">A <see cref="GrapioConfiguration"/> object that can be used to configure the Grapio Provider.</param>
-    public GrapioProvider(IGrapioConfiguration configuration)
+    /// <param name="logger">Instance of <see cref="ILogger{TCategoryName}"/>.</param>
+    public GrapioProvider(IGrapioConfiguration configuration, ILogger<GrapioProvider> logger)
     {
-        var config = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _config = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         
-        config.Validate();
-        _createDatabase = () => _database = new LiteDatabase(config.ConnectionString);
+        logger.LogInformation("Grapio Provider is starting...");
+        _status = ProviderStatus.NotReady;
     }
 
     internal GrapioProvider(ILiteDatabase database)
     {
-        _createDatabase = () => _database = database;
+        _database = database ?? throw new ArgumentNullException(nameof(database));
+        _config = GrapioConfiguration.Default;
+        _logger = NullLogger<GrapioProvider>.Instance;
+        _status = ProviderStatus.Ready;
     }
 
+    /// <inheritdoc />
+    public override async Task Initialize(EvaluationContext context)
+    {
+        if (_status == ProviderStatus.Ready)
+            return;
+        
+        _database = new LiteDatabase(_config.ConnectionString);
+
+        if (_config.LoadFeatureFlagsFromServer)
+            await LoadFeatureFlagsFromServer();
+
+        _status = ProviderStatus.Ready;
+        _logger.LogInformation("Grapio Provider is initialized.");
+    }
+
+    private async Task LoadFeatureFlagsFromServer()
+    {
+        try
+        {
+            using var channel = GrpcChannel.ForAddress(_config.ServerAddress);
+            var client = new FeatureFlags.FeatureFlagsClient(channel);
+            var reply = client.FetchFlags(new FeatureFlagsRequest { Requester = "GrapioProvider" });
+
+            while (await reply.ResponseStream.MoveNext(new CancellationToken()))
+            {
+                var current = reply.ResponseStream.Current;
+
+                switch (current.ValueCase)
+                {
+                    case FeatureFlagReply.ValueOneofCase.None:
+                        break;
+                    case FeatureFlagReply.ValueOneofCase.BooleanValue:
+                        _logger.LogDebug($"Loading feature flag: {current.Name} = {current.BooleanValue}");        
+                        break;
+                    case FeatureFlagReply.ValueOneofCase.StringValue:
+                        _logger.LogDebug($"Loading feature flag: {current.Name} = {current.StringValue}");
+                        break;
+                    case FeatureFlagReply.ValueOneofCase.IntegerValue:
+                        _logger.LogDebug($"Loading feature flag: {current.Name} = {current.IntegerValue}");
+                        break;
+                    case FeatureFlagReply.ValueOneofCase.DoubleValue:
+                        _logger.LogDebug($"Loading feature flag: {current.Name} = {current.DoubleValue}");
+                        break;
+                    case FeatureFlagReply.ValueOneofCase.StructureValue:
+                        _logger.LogDebug($"Loading feature flag: {current.Name} = {current.StructureValue}");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            await channel.ShutdownAsync();
+        }
+        catch (RpcException ex)
+        {
+            _status = ProviderStatus.Error;
+            _logger.LogError(ex, $"RPC exception fetching feature flags from the Grapio Server: {{Code: {ex.StatusCode}, Status: {ex.Status.Detail}}}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _status = ProviderStatus.Error;
+            _logger.LogError(ex, "Failed to load feature flags from the Grapio Server.");
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public override ProviderStatus GetStatus()
+    {
+        return _status;
+    }
+    
     /// <inheritdoc />
     public override Metadata GetMetadata()
     {
@@ -95,22 +181,28 @@ public class GrapioProvider: FeatureProvider, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        _database?.Dispose();
+        _database.Dispose();
         GC.SuppressFinalize(this);
     }
     
     private Task<ResolutionDetails<TValue>> ResolveValue<TFeat, TValue>(string flagKey, TValue defaultValue) where TFeat: FeatureFlagBase<TValue>
     {
+        if (_status != ProviderStatus.Ready)
+        {
+            throw new InvalidOperationException("The Grapio Provider is not ready yet or the Initialize method was not called.");
+        }
+        
         if (string.IsNullOrEmpty(flagKey))
         {
+            _logger.LogError("No value was provided for flagKey");
             var r = new ResolutionDetails<TValue>(flagKey, defaultValue, ErrorType.General, reason: "Flag key is blank or null", errorMessage: "Invalid flag key");
             return Task.FromResult(r);
         }
 
+        _logger.LogDebug($"Resolving value for flagKey '{flagKey}'");
+        
         try
         {
-            _database = _createDatabase();
-            
             var collection = _database.GetCollection<TFeat>();
 
             var exists = collection.Exists(f => f.FlagKey.Equals(flagKey, StringComparison.InvariantCultureIgnoreCase));

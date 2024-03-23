@@ -6,7 +6,7 @@ public class GrapioProvider: OpenFeature.FeatureProvider
 {
     public override Metadata GetMetadata()
     {
-        throw new NotImplementedException();
+        return new Metadata("Grapio Provider");
     }
 
     public override Task<ResolutionDetails<bool>> ResolveBooleanValue(string flagKey, bool defaultValue, EvaluationContext context = null!)

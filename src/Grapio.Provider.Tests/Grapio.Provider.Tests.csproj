@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Grapio.Provider\Grapio.Provider.csproj" />
+    </ItemGroup>
+
 </Project>

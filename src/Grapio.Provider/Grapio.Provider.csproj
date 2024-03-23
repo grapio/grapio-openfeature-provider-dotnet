@@ -1,54 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <PackageVersion>1.0.0</PackageVersion>
-        <RootNamespace>Grapio.Provider</RootNamespace>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Title>Grapio OpenFeature Provider for .NET</Title>
-        <Authors>Sydney du Plooy</Authors>
-        <Description>Grapio OpenFeature Provider for .NET</Description>
-        <Copyright>Copyright (c) 2024 Sydney du Plooy</Copyright>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/grapio</PackageProjectUrl>
-        <PackageIcon>grapio-padded.png</PackageIcon>
-        <RepositoryUrl>https://github.com/grapio/grapio-openfeature-provider-dotnet</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <LangVersion>10</LangVersion>
-        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-        <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-        <None Include="../../icons/grapio-padded.png" Visible="false" Pack="true" PackagePath="\"/>
-        <None Include="../../README.md" Visible="false" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DocumentationFile>bin\Debug\net7.0\grapio.xml</DocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-        <DocumentationFile>bin\Release\net7.0\grapio.xml</DocumentationFile>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.9.0" />
-        <PackageReference Include="Google.Protobuf" Version="3.26.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.62.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="LiteDB" Version="5.0.19" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-        <PackageReference Include="OpenFeature" Version="1.5.0" />
-        <PackageReference Include="Grapio.Common" Version="2.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Protobuf Include="Protos\FeatureFlags.proto" GrpcServices="Client" />
-    </ItemGroup>
 </Project>

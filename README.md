@@ -11,7 +11,7 @@
 This OpenFeature provider is a provider that performs flag evaluations as specified by the [OpenFeature](https://openfeature.dev/) specification.
 
 ## Workings
-The `GrapioProvider` is designed to store the feature flags in a [LiteDB database](https://www.litedb.org), a NoSQL document database. This provider resolves the feature flag values directly from the LiteDB database. This implies that that the application _must have access to the LiteDB database at runtime_. 
+The `GrapioProvider` is designed to store the feature flags using [FASTER KV](https://aka.ms/FASTER/), a fast concurrent persistent key-value store and log. This provider resolves the feature flag values directly from the key-value store. 
 
 The database can either be populated with feature flags beforehand or it can load the feature flags and values, on startup, from the [Grapio Server](https://github.com/grapio/grapio-server). 
 
@@ -44,6 +44,14 @@ builder.Services.AddGrapio(config =>
 If `LoadFeatureFlagsFromServer` is set to `true` then a `ServerAddress` must be specified.
 
 A `RefreshInterval` can be specified, in seconds, which will reload the feature flags and their values from the Grapio Server.
+
+The configuration may also be loaded from the `appsettings.json` file as shown below:
+
+```csharp
+var config = new GrapioConfiguration();
+host.Configuration.GetSection("Grapio").Bind(config);
+host.Services.AddGrapio(config);
+```
 
 ## Contributing
 To get started, have a look at the [CONTRIBUTING](https://github.com/grapio/grapio-openfeature-provider-dotnet/blob/main/CONTRIBUTING.md) guide.

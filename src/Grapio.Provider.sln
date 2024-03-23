@@ -1,10 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider.Tests", "Grapio.Provider.Tests\Grapio.Provider.Tests.csproj", "{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider", "Grapio.Provider\Grapio.Provider.csproj", "{2C0DACD8-421E-47F7-BA34-59BC9480804E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Console", "Grapio.Console\Grapio.Console.csproj", "{D9418870-A978-4A7A-A22D-1D8195FB0434}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grapio.Provider", "Grapio.Provider\Grapio.Provider.csproj", "{24536095-65EA-466F-A58C-4019B8C908F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,17 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB1FF7B6-646F-4A98-9305-C03DBFC983C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C0DACD8-421E-47F7-BA34-59BC9480804E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9418870-A978-4A7A-A22D-1D8195FB0434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24536095-65EA-466F-A58C-4019B8C908F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24536095-65EA-466F-A58C-4019B8C908F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24536095-65EA-466F-A58C-4019B8C908F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24536095-65EA-466F-A58C-4019B8C908F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

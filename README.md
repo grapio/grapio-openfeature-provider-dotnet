@@ -24,15 +24,24 @@ The advantage of populating the database with feature flags beforehand is that a
 ## Configuration
 To configure the Grapio provider, use the extension method `AddGrapio()` which will register the `GrapioProvider` service and its configuration `GrapioConfiguration` as singletons. `AddGrapio()` will validate the configuration and throw a `ValidationException` if it fails. 
 
+Below is an example configuration of the Grapio Provider:
+
+```csharp
+host.Services.AddGrapio(config =>
+{
+    config.ConnectionString = "Data Source=grapio.db;Mode=ReadWriteCreate";
+    config.Requester = "GrapioProvider";
+    config.ServerUri = new Uri("http://localhost:3278");
+    config.Offline = true;
+});
+```
+
 |Property|Description|Default|
 |---|---|---|
 |ConnectionString|Connection string to the internal database. `:memory:` is not supported.|`Data Source=grapio.db;Mode=ReadWriteCreate`|
 |Requester|Name of the application or server requesting the feature flags. This is used to load a subset of feature flags.|`string.Empty`|
 |ServerUri|Address of the Grapio Server.|http://localhost:3278|
 |Offline|Set to `true` to load the feature flags from the Grapio Server at startup or, set to `false` to use the pre-populated database|false|
-
-
-
 
 ## Contributing
 To get started, have a look at the [CONTRIBUTING](https://github.com/grapio/grapio-openfeature-provider-dotnet/blob/main/CONTRIBUTING.md) guide.

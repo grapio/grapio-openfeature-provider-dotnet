@@ -28,4 +28,25 @@ public class FeatureFlagsRepositoryTests
         
         Assert.Equal(featureFlags, result);
     }
+    
+    [Fact]
+    public async Task FetchFeatureFlag_must_return_the_feature_flag_from_the_database()
+    {
+        var featureFlags = new[]
+        {
+            new FeatureFlag("key-1", "value-1"),
+            new FeatureFlag("key-2", "value-2")
+        };
+        
+        var configuration = new GrapioConfiguration
+        {
+            ConnectionString = "Data Source=grapio.db;Mode=ReadWriteCreate"
+        };
+
+        var repository = new FeatureFlagsRepository(configuration, NullLogger<FeatureFlagsRepository>.Instance);
+        var result = await repository.FetchFeatureFlag("key-2", CancellationToken.None);
+        
+        Assert.True(result.Found);
+        Assert.Equal(new FeatureFlag("key-2", "value-2"), result.FeatureFlag);
+    }
 }

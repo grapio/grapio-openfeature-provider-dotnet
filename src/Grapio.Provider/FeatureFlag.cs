@@ -2,10 +2,16 @@ namespace Grapio.Provider;
 
 public class FeatureFlag: IEquatable<FeatureFlag>
 {
-    public string FlagKey { get; }
-    public object Value { get; }
+    public string? FlagKey { get; }
+    public object? Value { get; }
 
     public FeatureFlag()
+    {
+    }
+
+    public static FeatureFlag Null = new NullFeatureFlag();
+
+    private class NullFeatureFlag : FeatureFlag
     {
     }
     

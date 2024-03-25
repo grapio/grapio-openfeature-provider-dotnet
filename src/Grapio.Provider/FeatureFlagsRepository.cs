@@ -9,6 +9,7 @@ namespace Grapio.Provider;
 
 public interface IFeatureFlagsRepository
 {
+    Task<(bool Found, FeatureFlag FeatureFlag)> FetchFeatureFlag(string flagKey, CancellationToken cancellationToken = default);
     Task SaveFeatureFlags(IEnumerable<FeatureFlag> featureFlags, CancellationToken cancellationToken = default);
 }
 
@@ -48,8 +49,8 @@ public class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<F
     {
         var success = await connection.ExecuteAsync(
             "CREATE TABLE IF NOT EXISTS FeatureFlags(" +
-            "FlagKey TEXT PRIMARY KEY, " +
-            "Value BLOB NOT NULL" +
+                "FlagKey TEXT PRIMARY KEY, " +
+                "Value BLOB NOT NULL" +
             ") WITHOUT ROWID;"
         );
             
@@ -67,6 +68,37 @@ public class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<F
             CommandType.Text);
 
         return result == 1; // table exists
+    }
+
+    public async Task<(bool Found, FeatureFlag FeatureFlag)> FetchFeatureFlag(string flagKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(flagKey);
+        
+        await using var connection = new SqliteConnection(configuration.ConnectionString);
+        
+        try
+        {
+            await connection.OpenAsync(cancellationToken);
+            
+            var featureFlag = await connection.QuerySingleOrDefaultAsync<FeatureFlag>(
+                "SELECT FlagKey, Value FROM FeatureFlags WHERE FlagKey = @FlagKey", new { FlagKey = flagKey });
+            
+            if (featureFlag != null)
+                return (true, featureFlag);
+            
+            logger.LogWarning("Feature flag [{key}] was not found in the database", flagKey);
+            return (false, FeatureFlag.Null);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to fetch feature flag");
+            throw;
+        }
+        finally
+        {
+            if(connection.State == ConnectionState.Open)
+                await connection.CloseAsync();
+        }
     }
 
     public async Task SaveFeatureFlags(IEnumerable<FeatureFlag> featureFlags, CancellationToken cancellationToken = default)

@@ -7,7 +7,7 @@ public interface IFeatureFlagLoader
     Task LoadFeatureFlags(CancellationToken cancellationToken);
 }
 
-public class FeatureFlagLoader(IGrapioServerGateway serverGateway, GrapioConfiguration configuration, IFeatureFlagsRepository repository, ILogger<FeatureFlagLoader> logger) : IFeatureFlagLoader
+internal class FeatureFlagLoader(IGrapioServerGateway serverGateway, GrapioConfiguration configuration, IFeatureFlagsRepository repository, ILogger<FeatureFlagLoader> logger) : IFeatureFlagLoader
 {
     public async Task LoadFeatureFlags(CancellationToken cancellationToken)
     {

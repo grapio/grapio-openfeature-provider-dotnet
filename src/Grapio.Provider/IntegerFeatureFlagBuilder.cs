@@ -1,6 +1,6 @@
 namespace Grapio.Provider;
 
-public class IntegerFeatureFlagBuilder: IFeatureFlagBuilder
+internal class IntegerFeatureFlagBuilder: IFeatureFlagBuilder
 {
     public bool Matches(FeatureFlagReply.ValueOneofCase toMatch)
     {

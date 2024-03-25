@@ -4,6 +4,7 @@ using OpenFeature.Constant;
 using OpenFeature.Model;
 
 [assembly: InternalsVisibleTo("Grapio.Provider.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace Grapio.Provider;
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Grapio.Provider;
 
-public interface IGrapioServerConnection
+internal interface IGrapioServerConnection
 {
     AsyncServerStreamingCall<FeatureFlagReply> FetchFeatureFlags();
 }

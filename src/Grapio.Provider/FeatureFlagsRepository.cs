@@ -13,7 +13,7 @@ public interface IFeatureFlagsRepository
     Task SaveFeatureFlags(IEnumerable<FeatureFlag> featureFlags, CancellationToken cancellationToken = default);
 }
 
-public class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<FeatureFlagsRepository> logger) : IFeatureFlagsRepository
+internal class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<FeatureFlagsRepository> logger) : IFeatureFlagsRepository
 {
     private async Task EnsureDatabaseTables()
     {
@@ -63,7 +63,7 @@ public class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<F
 
     private static async Task<bool> FeatureFlagTableExists(IDbConnection connection)
     {
-        var result = await connection.QuerySingleAsync<int>(
+        var result = await connection.ExecuteScalarAsync<int>(
             sql: "SELECT 1 FROM sqlite_master WHERE type='table' AND name='FeatureFlags';", 
             CommandType.Text);
 
@@ -73,6 +73,8 @@ public class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger<F
     public async Task<(bool Found, FeatureFlag FeatureFlag)> FetchFeatureFlag(string flagKey, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(flagKey);
+
+        await EnsureDatabaseTables();
         
         await using var connection = new SqliteConnection(configuration.ConnectionString);
         

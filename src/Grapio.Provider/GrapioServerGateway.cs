@@ -3,12 +3,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Grapio.Provider;
 
-public interface IGrapioServerGateway
+internal interface IGrapioServerGateway
 {
     Task<IEnumerable<FeatureFlag>> FetchFeatureFlags(CancellationToken cancellationToken);
 }
 
-public class GrapioServerGateway(
+internal class GrapioServerGateway(
     IGrapioServerConnection connection, 
     IEnumerable<IFeatureFlagBuilder> builders, 
     ILogger<GrapioServerGateway> logger) : IGrapioServerGateway

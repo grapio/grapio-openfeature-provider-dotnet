@@ -1,10 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>.NET8.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Title>Grapio.Provider</Title>
+        <Authors>Sydney du Plooy</Authors>
+        <Description>Grapio OpenFeature Provider for .NET</Description>
+        <Copyright>Copyright (c) 2024 Sydney du Plooy</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/grapio</PackageProjectUrl>
+        <PackageIcon>grapio-padded.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/grapio/grapio-openfeature-provider-dotnet</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <FileVersion>1.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="../../icons/grapio-padded.png" Visible="false" Pack="true" PackagePath="\"/>
+      <None Include="../../README.md" Visible="false" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.35" />
@@ -16,7 +38,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
         <PackageReference Include="OpenFeature" Version="1.5.0" />
     </ItemGroup>
 

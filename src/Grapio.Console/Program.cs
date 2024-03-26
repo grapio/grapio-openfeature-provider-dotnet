@@ -12,7 +12,7 @@ host.Services.AddGrapio(config =>
     config.ConnectionString = "Data Source=grapio.db";
     config.Requester = "Grapio.Console";
     config.ServerUri = new Uri("http://localhost:5231");
-    config.Offline = true;
+    config.Offline = false;
 });
 
 host.Logging.AddSimpleConsole(options =>
@@ -20,6 +20,7 @@ host.Logging.AddSimpleConsole(options =>
     options.SingleLine = true;
     options.TimestampFormat = "HH:mm:ss.ff ";
 });
+
 host.Configuration.AddJsonFile("appsettings.json");
 
 var app = host.Build();

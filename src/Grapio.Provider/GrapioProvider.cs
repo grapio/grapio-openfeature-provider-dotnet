@@ -41,7 +41,7 @@ public class GrapioProvider(
         return await Resolve(flagKey, defaultValue, context, Convert.ToBoolean);
     }
 
-    public override async Task<ResolutionDetails<string>> ResolveStringValue(string flagKey, string defaultValue, EvaluationContext context = null!)
+    public override async Task<ResolutionDetails<string?>> ResolveStringValue(string flagKey, string defaultValue, EvaluationContext context = null!)
     {
         return await Resolve(flagKey, defaultValue, context, Convert.ToString);
     }

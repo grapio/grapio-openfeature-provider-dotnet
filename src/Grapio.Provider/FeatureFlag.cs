@@ -5,12 +5,11 @@ public class FeatureFlag: IEquatable<FeatureFlag>
     public string? FlagKey { get; }
     public object? Value { get; }
 
-    public FeatureFlag()
+    private FeatureFlag()
     {
     }
 
     public static FeatureFlag Null = new NullFeatureFlag();
-    private IConvertible _convertibleImplementation;
 
     private class NullFeatureFlag : FeatureFlag
     {
@@ -29,7 +28,7 @@ public class FeatureFlag: IEquatable<FeatureFlag>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return FlagKey == other.FlagKey && Value.Equals(other.Value);
+        return Value != null && FlagKey == other.FlagKey && Value.Equals(other.Value);
     }
 
     public override bool Equals(object? obj)

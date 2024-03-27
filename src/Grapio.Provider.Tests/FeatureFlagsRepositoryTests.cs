@@ -44,6 +44,7 @@ public class FeatureFlagsRepositoryTests
         };
 
         var repository = new FeatureFlagsRepository(configuration, NullLogger<FeatureFlagsRepository>.Instance);
+        await repository.SaveFeatureFlags(featureFlags);
         var result = await repository.FetchFeatureFlag("key-2", CancellationToken.None);
         
         Assert.True(result.Found);

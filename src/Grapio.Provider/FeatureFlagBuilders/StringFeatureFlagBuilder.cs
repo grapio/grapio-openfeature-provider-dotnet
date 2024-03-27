@@ -1,4 +1,4 @@
-namespace Grapio.Provider;
+namespace Grapio.Provider.FeatureFlagBuilders;
 
 internal class StringFeatureFlagBuilder: IFeatureFlagBuilder
 {

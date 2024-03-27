@@ -1,10 +1,11 @@
-using FluentValidation.Results;
 using FluentValidation.TestHelper;
 
 namespace Grapio.Provider.Tests;
 
 public class GrapioConfigurationValidatorTests
 {
+    private GrapioConfigurationValidator _validator = new();
+
     [Fact]
     public void Validate_should_return_validation_error_for_an_empty_requester()
     {
@@ -13,8 +14,7 @@ public class GrapioConfigurationValidatorTests
             Offline = false
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult
@@ -31,8 +31,7 @@ public class GrapioConfigurationValidatorTests
             ConnectionString = "DataSource=:memory:"
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult
@@ -50,8 +49,7 @@ public class GrapioConfigurationValidatorTests
             RefreshInterval = 4
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult
@@ -69,8 +67,7 @@ public class GrapioConfigurationValidatorTests
             RefreshInterval = 7201
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult
@@ -87,8 +84,7 @@ public class GrapioConfigurationValidatorTests
             ServerUri = "invalid"
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult
@@ -107,8 +103,7 @@ public class GrapioConfigurationValidatorTests
             Requester = string.Empty
         };
             
-        var validator = new GrapioConfigurationValidator();
-        var validationResult = validator.Validate(config);
+        var validationResult = _validator.Validate(config);
         var testValidationResult = new TestValidationResult<GrapioConfiguration>(validationResult);
         
         testValidationResult.ShouldNotHaveValidationErrorFor(x => x.RefreshInterval);

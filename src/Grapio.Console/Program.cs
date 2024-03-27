@@ -1,18 +1,17 @@
 ﻿using Grapio.Provider;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OpenFeature.Model;
 
 var host = Host.CreateApplicationBuilder();
 
 host.Services.AddGrapio(config =>
 {
-    config.ConnectionString = "Data Source=grapio.db";
+    config.ConnectionString = "DataSource=grapio.db;Mode=ReadWriteCreate;";
     config.Requester = "Grapio.Console";
-    config.ServerUri = new Uri("http://localhost:5231");
+    config.ServerUri = "http://localhost:5170";
     config.Offline = false;
+    config.RefreshInterval = 1;
 });
 
 host.Logging.AddSimpleConsole(options =>
@@ -25,7 +24,9 @@ host.Configuration.AddJsonFile("appsettings.json");
 
 var app = host.Build();
 
-var provider = app.Services.GetRequiredService<GrapioProvider>();
-await provider.Initialize(EvaluationContext.Empty);
-var resolution = await provider.ResolveIntegerValue("myval", 1);
-Console.WriteLine($"{resolution.FlagKey}={resolution.Value}");
+// var provider = app.Services.GetRequiredService<GrapioProvider>();
+// await provider.Initialize(EvaluationContext.Empty);
+// var resolution = await provider.ResolveIntegerValue("Key-4", 1);
+// Console.WriteLine($"{resolution.FlagKey}={resolution.Value}");
+
+await app.RunAsync();

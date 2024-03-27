@@ -4,6 +4,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
+using SQLitePCL;
 
 namespace Grapio.Provider;
 
@@ -108,7 +109,7 @@ internal class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger
         ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
         ArgumentNullException.ThrowIfNull(logger, nameof(logger));
         ArgumentNullException.ThrowIfNull(featureFlags);
-        
+
         logger.LogInformation("Checking the database for tables");
         await EnsureDatabaseTables();
 
@@ -122,17 +123,22 @@ internal class FeatureFlagsRepository(GrapioConfiguration configuration, ILogger
 
         try
         {
+            logger.LogDebug("Opening connection to the database");
             await connection.OpenAsync(cancellationToken);
+            
+            logger.LogDebug("Starting database transaction");
             await using var transaction = connection.BeginTransaction();
             
-            logger.LogWarning("Deleting all existing records from FeatureFlags database table");
+            logger.LogDebug("Deleting all existing records from FeatureFlags database table");
             await connection.DeleteAllAsync<FeatureFlag>();
         
-            logger.LogWarning("Inserting feature flags into the database");
+            logger.LogDebug("Inserting feature flags into the database");
             await InsertFeatureFlag(featureFlags, transaction, connection, cancellationToken);
         
-            logger.LogInformation("Committing save feature flags transaction");
+            logger.LogDebug("Committing feature flags transaction");
             await transaction.CommitAsync(cancellationToken);
+            
+            logger.LogInformation("Completed saving feature flags");
         }
         catch (Exception e)
         {

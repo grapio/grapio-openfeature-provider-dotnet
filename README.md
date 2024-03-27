@@ -30,18 +30,20 @@ Below is an example configuration of the Grapio Provider:
 host.Services.AddGrapio(config =>
 {
     config.ConnectionString = "Data Source=grapio.db;Mode=ReadWriteCreate";
-    config.Requester = "GrapioProvider";
-    config.ServerUri = new Uri("http://localhost:3278");
     config.Offline = true;
+    config.RefreshInterval = 300;
+    config.Requester = "GrapioProvider";
+    config.ServerUri = new Uri("http://localhost:3278");    
 });
 ```
 
 |Property|Description|Default|
 |---|---|---|
-|ConnectionString|Connection string to the internal database. `:memory:` is not supported.|`Data Source=grapio.db;Mode=ReadWriteCreate`|
+|ConnectionString|Connection string to the internal database. `:memory:` is not supported.|`DataSource=grapio.db;Mode=ReadWriteCreate`|
+|Offline|Set to `true` to load the feature flags from the Grapio Server at startup or, set to `false` to use the pre-populated database|false|
+|RefreshInterval|Sets how often the feature flags will be fetched from the Grapio Server, in seconds. This setting only takes effect when Offline is `false`.|300|
 |Requester|Name of the application or server requesting the feature flags. This is used to load a subset of feature flags.|`string.Empty`|
 |ServerUri|Address of the Grapio Server.|http://localhost:3278|
-|Offline|Set to `true` to load the feature flags from the Grapio Server at startup or, set to `false` to use the pre-populated database|false|
 
 ## Contributing
 To get started, have a look at the [CONTRIBUTING](https://github.com/grapio/grapio-openfeature-provider-dotnet/blob/main/CONTRIBUTING.md) guide.

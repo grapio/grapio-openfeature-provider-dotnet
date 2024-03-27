@@ -1,3 +1,4 @@
+using FluentValidation;
 using Grpc.Net.Client;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,10 +9,12 @@ public static class GrapioExtensions
     public static void AddGrapio(this IServiceCollection serviceCollection, Action<GrapioConfiguration> config)
     {
         var configuration = new GrapioConfiguration();
-        config(configuration); 
+        config(configuration);
+
+        new GrapioConfigurationValidator().ValidateAndThrow(configuration);
 
         serviceCollection.AddTransient<GrapioService.GrapioServiceClient>(
-            provider => new GrapioService.GrapioServiceClient(GrpcChannel.ForAddress(configuration.ServerUri)));
+            _ => new GrapioService.GrapioServiceClient(GrpcChannel.ForAddress(configuration.ServerUri)));
         
         serviceCollection.AddSingleton(configuration);
         serviceCollection.AddTransient<IGrapioServerConnection, GrapioServerConnection>();
@@ -26,5 +29,8 @@ public static class GrapioExtensions
         serviceCollection.AddTransient<IFeatureFlagLoader, FeatureFlagLoader>();
         serviceCollection.AddSingleton<IFeatureFlagsRepository, FeatureFlagsRepository>();
         serviceCollection.AddSingleton<GrapioProvider>();
+
+        if (!configuration.Offline)
+            serviceCollection.AddHostedService<FeatureFlagRefresher>();
     }
 }

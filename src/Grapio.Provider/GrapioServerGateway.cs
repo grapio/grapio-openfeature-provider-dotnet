@@ -19,13 +19,16 @@ internal class GrapioServerGateway(
         ArgumentNullException.ThrowIfNull(builders, nameof(builders));
         ArgumentNullException.ThrowIfNull(logger, nameof(logger));
         
-        var serverResponse = connection.FetchFeatureFlags();
-
-        if (serverResponse.GetStatus().StatusCode == StatusCode.OK)
+        try
+        {
+            var serverResponse = connection.FetchFeatureFlags();
             return await BuildFeatureFlags(serverResponse, cancellationToken).ConfigureAwait(false);
-
-        logger.LogError($"Error fetching feature flags from server. Status = [{serverResponse.GetStatus().StatusCode}]");
-        throw new Exception("Error fetching feature flags from the Grapio Server. See the logs for more information.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Error fetching feature flags from server. See the logs for more information.");
+            throw;
+        }
     }
 
     private async Task<IEnumerable<FeatureFlag>> BuildFeatureFlags(

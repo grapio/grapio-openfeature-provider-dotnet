@@ -23,7 +23,7 @@ public class FeatureFlagBuilderTests
         });
         
         Assert.Equal("A", ff.FlagKey);
-        Assert.True((bool)ff.Value);
+        Assert.True((bool)ff.Value!);
     }
     
     [Fact]

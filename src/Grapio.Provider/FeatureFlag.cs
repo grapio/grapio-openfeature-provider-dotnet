@@ -10,6 +10,7 @@ public class FeatureFlag: IEquatable<FeatureFlag>
     }
 
     public static FeatureFlag Null = new NullFeatureFlag();
+    private IConvertible _convertibleImplementation;
 
     private class NullFeatureFlag : FeatureFlag
     {

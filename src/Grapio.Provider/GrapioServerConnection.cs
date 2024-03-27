@@ -23,10 +23,14 @@ internal class GrapioServerConnection(
         {
             logger.LogInformation("Loading feature flags from the Grapio Server for {requester}", configuration.Requester);
             
-            return client.FetchFeatureFlags(new FeatureFlagsRequest
+            var result = client.FetchFeatureFlags(new FeatureFlagsRequest
             {
                 Requester = configuration.Requester
             });
+            
+            logger.LogDebug("Fetched feature flags from the Grapio Server");
+
+            return result;
         }
         catch (Exception e)
         {
